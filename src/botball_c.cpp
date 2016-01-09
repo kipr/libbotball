@@ -1,10 +1,9 @@
 #include "botball/botball.h"
 #include "botball/botball.hpp"
 
-#include <wallaby/util.h>
-#include <wallaby/create.hpp>
 #include <wallaby/button.h>
 #include <wallaby/analog.h>
+#include <wallaby/audio.h>
 #include <aurora/graphics.h>
 
 #include <iostream>
@@ -22,10 +21,6 @@
 
 #include <cstdlib>
 #include <iostream>*/
-
-#ifndef WIN32
-#include <unistd.h>
-#endif
 
 void colorbar(int i);
 void display_clear();
@@ -61,31 +56,31 @@ void wait_for_light(int light_port)
   while (!OK) {
     set_b_button_text("Light is ON");
     display_clear();
-    display_printf (0,0,"CALIBRATE: sensor port #%d", light_port);
-    display_printf(0,1,"   press ON when light is on");
+    printf("CALIBRATE: sensor port %d\n", light_port);
+    printf("press ON when light is on\n");
     while(b_button()==0){
       msleep(100);
       onval=analog(light_port); // sensor value when light is on
-      display_printf(0,2,"   light on value is = %d        ", onval);
+      printf("light on value is = %d\n", onval);
     }
     set_b_button_text("Light is OFF");
-    display_printf(0,1,"   light on value is = %d        ", onval);
+    printf("light on value is = %d\n", onval);
     msleep(200);
     beep();
     while (b_button()); // debounce B button
-    display_printf(0,1,"   press OFF when light is off");
+    printf("press OFF when light is off\n");
     while (b_button()==0) {
       offval=analog(light_port);
-      display_printf(0,3,"   light off value is = %d         ", offval);
+      printf("light off value is %d\n", offval);
       msleep(100);
     }
     offval=analog(light_port); // sensor value when light is off
-    display_printf(0,3,"   light off value is = %d         ", offval);
+    printf("light off value is = %d\n", offval);
     msleep(200);
     if ((offval-onval)>=THRESHOLD) { // bright = small values
       OK=1;
-      display_printf(0,4,"Good Calibration!");
-      display_printf(0,7,"Diff = %d:  WAITING FOR LIGHTS ON",offval-onval);
+      printf("Good calibration!\n");
+      printf("Diff = %d: WAITING FOR LIGHTS ON\n", offval-onval);
       graphics_open(240,25);
       graphics_fill(255,255,255);
       graphics_update();
@@ -93,7 +88,7 @@ void wait_for_light(int light_port)
         colorbar((i++)%74);
         msleep(20);
         reading=analog(light_port);
-        display_printf(0,8,"Current reading: %d ", reading);
+        printf("Current reading: %d\n", reading);
         if ((reading-onval) < THRESHOLD) { // reading is low enough for light on
           msleep(FLASHPAUSE); // pause
           reading=analog(light_port);  // get second reading to rule out flash  
@@ -101,16 +96,16 @@ void wait_for_light(int light_port)
         }
       }
       graphics_close();
-      display_printf(0,8,"Reading:%4d *** LIGHTS ARE ON ***", reading);
+      printf("Reading: %4d *** LIGHTS ARE ON ***\n", reading);
     }
     else {
-      display_printf(0,7,"BAD CALIBRATION");
+      printf("BAD CALIBRATION\n");
       if (offval<256) {
-        display_printf(0,8,"   Add Shielding!!");
+        printf("Add shielding!!\n");
         msleep(5000);
       }
       else {
-        display_printf(0,8,"   Aim sensor!!");
+        printf("Aim sensor!!\n");
         msleep(5000);
       }
     }
