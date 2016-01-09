@@ -1,11 +1,19 @@
-#include "botball.hpp"
+#include "botball/botball.hpp"
+
+#include <wallaby/create.hpp>
+#include <wallaby/util.h>
+#include <iostream>
+
+#ifndef WIN32
+#include <unistd.h>
+#endif
 
 ShutDownIn::ShutDownIn(double s)
   : m_s(s)
 {
   
 }
-virtual void ShutDownIn::run()
+void ShutDownIn::run()
 {
   const double start = seconds();
   msleep(m_s * 1000.0);
