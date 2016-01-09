@@ -4,12 +4,12 @@ project(libbotball)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 find_package(Aurora REQUIRED)
+find_package(Wallaby REQUIRED)
 
 set(INCLUDE_DIR ${libbotball_SOURCE_DIR}/include)
 set(SRC_DIR ${libbotball_SOURCE_DIR}/src)
 
-include_directories(${INCLUDE_DIR})
-include_directories(${AURORA_INCLUDE_DIRS})
+include_directories(${INCLUDE_DIR} ${AURORA_INCLUDE_DIRS} ${WALLABY_INCLUDE_DIRS})
 
 
 file(GLOB SRCS ${SRC_DIR}/*.cpp)
@@ -39,7 +39,7 @@ link_directories(${CMAKE_INSTALL_PREFIX}/lib)
 # Library: libbotball
 add_library(botball SHARED ${SRCS})
 
-target_link_libraries(botball ${AURORA_LIBRARIES})
+target_link_libraries(botball ${AURORA_LIBRARIES} ${WALLABY_LIBRARIES})
 
 install(TARGETS botball DESTINATION lib)
 install(DIRECTORY ${INCLUDE_DIR}/botball DESTINATION include)
